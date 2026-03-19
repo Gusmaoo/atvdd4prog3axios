@@ -1,0 +1,87 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "Lucas Andrade",
+      "email": "lucas@email.com",
+      "senha": "654321"
+    },
+    {
+      "id": "2",
+      "nome": "Beatriz Lima",
+      "email": "beatriz@email.com",
+      "senha": "qwerty"
+    },
+    {
+      "id": "3",
+      "nome": "Rafael Costa",
+      "cpf": "22222222222",
+      "email": "rafael@ifpe.edu.br",
+      "senha": "abc123"
+    },
+    {
+      "id": "4",
+      "nome": "Juliana Alves",
+      "cpf": "33333333333",
+      "email": "juliana@gmail.com",
+      "senha": "senha123"
+    },
+    {
+      "id": "5",
+      "nome": "Fernando Rocha",
+      "email": "fernando@email.com",
+      "senha": "pass567"
+    },
+    {
+      "id": "6",
+      "nome": "Patrícia Gomes",
+      "email": "patricia@email.com",
+      "senha": "paty789"
+    }
+  ],
+  "contatos": [
+    {
+      "id": "1",
+      "nome": "Pedro Henrique",
+      "telefone": "81911112222",
+      "email": "pedro@email.com",
+      "usuarioId": 1
+    },
+    {
+      "id": "2",
+      "nome": "Camila Torres",
+      "telefone": "81933334444",
+      "email": "camila@email.com",
+      "usuarioId": 2
+    },
+    {
+      "id": "3",
+      "nome": "Bruno Martins",
+      "telefone": "81955556666",
+      "email": "bruno@email.com",
+      "usuarioId": 3
+    },
+    {
+      "id": "4",
+      "nome": "Larissa Melo",
+      "telefone": "81977778888",
+      "email": "larissa@email.com",
+      "usuarioId": 4
+    },
+    {
+      "id": "5",
+      "nome": "Eduardo Nunes",
+      "telefone": "81999990000",
+      "email": "eduardo@email.com",
+      "usuarioId": 5
+    },
+    {
+      "id": "6",
+      "nome": "Mariana Silva",
+      "telefone": "81888887777",
+      "email": "mariana@email.com",
+      "usuarioId": 6
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
