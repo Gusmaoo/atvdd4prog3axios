@@ -5,17 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
-  ScrollView,
 } from 'react-native';
-import axios from 'axios';
 
-// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
-const API_URL = 'http://192.168.1.108:3001';
-
-export default function EsqueceuSenhaScreen({ navigation }) {
+export default function EsqueceuSenhaScreen({ navigation, usuarios }) {
   const [email, setEmail] = useState('');
 
   function handleEnviar() {
@@ -24,158 +17,119 @@ export default function EsqueceuSenhaScreen({ navigation }) {
       return;
     }
 
-    axios.get(`${API_URL}/usuarios?email=${email}`)
-      .then(response => {
-        if (response.data.length > 0) {
-          Alert.alert("Sucesso", "Email encontrado! Instrucoes enviadas (simulacao)");
-        } else {
-          Alert.alert("Erro", "Email nao cadastrado");
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        Alert.alert("Erro", "Erro ao conectar com servidor");
-      });
+    const usuarioEncontrado = usuarios.find(u => u.email === email);
+
+    if (usuarioEncontrado) {
+      Alert.alert("Sucesso", "Email encontrado! Instrucoes enviadas (simulacao)");
+    } else {
+      Alert.alert("Erro", "Email nao cadastrado");
+    }
   }
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Esqueceu a senha</Text>
-            <Text style={styles.subtitle}>
-              Digite seu email para receber instruções
-            </Text>
-          </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Esqueceu a Senha</Text>
+      </View>
 
-          {/* Formulário */}
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Digite seu email"
-                placeholderTextColor="#999"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-              />
-            </View>
+      <View style={styles.content}>
+        <Text style={styles.subtitle}>
+          Digite seu email para receber instrucoes de recuperacao de senha
+        </Text>
 
-            <TouchableOpacity 
-              style={styles.enviarButton}
-              onPress={handleEnviar}
-            >
-              <Text style={styles.enviarButtonText}>Enviar</Text>
-            </TouchableOpacity>
+        <View style={styles.form}>
+          <Text>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-            <TouchableOpacity 
-              style={styles.voltarButton}
-              onPress={() => navigation.navigate('Login')}
-            >
-              <Text style={styles.voltarButtonText}>Voltar para o login</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity 
+            style={styles.enviarButton}
+            onPress={handleEnviar}
+          >
+            <Text style={styles.enviarButtonText}>Enviar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.voltarButton}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.voltarButtonText}>Voltar para o login</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
-  scrollContent: {
-    flexGrow: 1,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2E6DD8",
+    padding: 15,
+    paddingTop: 50,
+  },
+  back: {
+    color: "#fff",
+    fontSize: 20,
+    marginRight: 15,
+  },
+  headerTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    maxWidth: 400,
-    width: '100%',
-    alignSelf: 'center',
-    paddingVertical: 40,
-  },
-  header: {
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-    textAlign: 'center',
+    padding: 30,
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
+    marginBottom: 30,
     textAlign: 'center',
   },
   form: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  inputContainer: {
-    marginBottom: 25,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 5,
+    flex: 1,
   },
   input: {
-    height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
     fontSize: 16,
-    color: '#333',
-    backgroundColor: '#f9f9f9',
   },
   enviarButton: {
     backgroundColor: '#FF9500',
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 5,
     alignItems: 'center',
     marginBottom: 15,
   },
   enviarButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   voltarButton: {
-    backgroundColor: 'transparent',
-    height: 40,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   voltarButtonText: {
-    color: '#007AFF',
+    color: '#2E6DD8',
     fontSize: 16,
-    fontWeight: '600',
   },
 });

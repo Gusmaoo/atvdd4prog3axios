@@ -7,12 +7,8 @@ import {
   StyleSheet,
   Alert
 } from "react-native";
-import axios from 'axios';
 
-// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
-const API_URL = 'http://192.168.1.108:3001';
-
-export default function CadastroScreen({ navigation }) {
+export default function CadastroScreen({ navigation, usuarios, setUsuarios }) {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [email, setEmail] = useState("");
@@ -24,56 +20,55 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
-    axios.post(`${API_URL}/usuarios`, {
+    const novoUsuario = {
+      id: usuarios.length + 1,
       nome,
       cpf,
       email,
       senha
-    })
-    .then(() => {
-      Alert.alert("Sucesso", "Usuario cadastrado com sucesso!");
-      navigation.navigate('Login');
-    })
-    .catch(error => {
-      console.log(error);
-      Alert.alert("Erro", "Erro ao cadastrar usuario");
-    });
+    };
+
+    setUsuarios([...usuarios, novoUsuario]);
+    Alert.alert("Sucesso", "Usuario cadastrado com sucesso!");
+    navigation.navigate('Login');
   }
 
   return(
     <View style={styles.container}>
       
-      {/* Header Azul com botão voltar */}
+      {/* Header Azul com botao voltar */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Usuário</Text>
+        <Text style={styles.headerTitle}>Usuario</Text>
       </View>
 
       <View style={styles.form}>
-        <Text>nome</Text>
+        <Text>Nome</Text>
         <TextInput
           style={styles.input}
           value={nome}
           onChangeText={setNome}
         />
 
-        <Text>cpf</Text>
+        <Text>CPF</Text>
         <TextInput
           style={styles.input}
           value={cpf}
           onChangeText={setCpf}
         />
 
-        <Text>email</Text>
+        <Text>Email</Text>
         <TextInput
           style={styles.input}
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
-        <Text>senha</Text>
+        <Text>Senha</Text>
         <TextInput
           style={styles.input}
           secureTextEntry
@@ -100,6 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#2E6DD8",
     padding: 15,
+    paddingTop: 50,
   },
 
   back: {

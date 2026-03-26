@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import axios from 'axios';
 
-// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
-const API_URL = 'http://192.168.1.108:3001';
-
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, usuarios }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -15,25 +11,16 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    axios.get(`${API_URL}/usuarios`)
-      .then(response => {
-        const usuarios = response.data;
+    const usuarioEncontrado = usuarios.find(
+      u => u.email === email && u.senha === senha
+    );
 
-        const usuarioEncontrado = usuarios.find(
-          u => u.email === email && u.senha === senha
-        );
-
-        if (usuarioEncontrado) {
-          Alert.alert("Sucesso", "Login realizado!");
-          navigation.navigate('ListaContatos');
-        } else {
-          Alert.alert("Erro", "Usuario ou senha invalidos");
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        Alert.alert("Erro", "Erro ao conectar com servidor");
-      });
+    if (usuarioEncontrado) {
+      Alert.alert("Sucesso", "Login realizado!");
+      navigation.navigate('ListaContatos');
+    } else {
+      Alert.alert("Erro", "Usuario ou senha invalidos");
+    }
   }
 
   return (
@@ -50,7 +37,7 @@ export default function LoginScreen({ navigation }) {
       />
 
       <TextInput
-        placeholder="senha"
+        placeholder="Senha"
         style={styles.input}
         secureTextEntry
         value={senha}

@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import axios from 'axios';
-
-// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
-const API_URL = 'http://192.168.1.108:3001';
 
 export default function CadastroContatoScreen({ navigation, contatos, setContatos }) {
   const [nome, setNome] = useState("");
@@ -16,33 +12,59 @@ export default function CadastroContatoScreen({ navigation, contatos, setContato
       return;
     }
 
-    axios.post(`${API_URL}/contatos`, {
+    const novoContato = {
+      id: contatos.length > 0 ? Math.max(...contatos.map(c => c.id)) + 1 : 1,
       nome,
       email,
-      telefone,
-      usuarioId: 1
-    })
-    .then(() => {
-      Alert.alert("Sucesso", "Contato cadastrado!");
-      navigation.navigate('ListaContatos');
-    })
-    .catch(error => {
-      console.log(error);
-      Alert.alert("Erro", "Erro ao cadastrar contato");
-    });
+      telefone
+    };
+
+    setContatos([...contatos, novoContato]);
+    Alert.alert("Sucesso", "Contato cadastrado!");
+    navigation.navigate('ListaContatos');
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Contato</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Cadastrar Contato</Text>
+      </View>
 
-      <TextInput placeholder="Nome" style={styles.input} onChangeText={setNome} />
-      <TextInput placeholder="Email" style={styles.input} onChangeText={setEmail} />
-      <TextInput placeholder="Telefone" style={styles.input} onChangeText={setTelefone} />
+      <View style={styles.form}>
+        <Text>Nome</Text>
+        <TextInput 
+          placeholder="Digite o nome" 
+          style={styles.input} 
+          value={nome}
+          onChangeText={setNome} 
+        />
 
-      <TouchableOpacity style={styles.button} onPress={salvar}>
-        <Text style={styles.buttonText}>Salvar</Text>
-      </TouchableOpacity>
+        <Text>Email</Text>
+        <TextInput 
+          placeholder="Digite o email" 
+          style={styles.input} 
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <Text>Telefone</Text>
+        <TextInput 
+          placeholder="Digite o telefone" 
+          style={styles.input} 
+          value={telefone}
+          onChangeText={setTelefone}
+          keyboardType="phone-pad"
+        />
+
+        <TouchableOpacity style={styles.button} onPress={salvar}>
+          <Text style={styles.buttonText}>Salvar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -50,27 +72,43 @@ export default function CadastroContatoScreen({ navigation, contatos, setContato
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-     padding: 30 
-
-},
-  title: { 
-    fontSize: 22,
-    
-     marginBottom: 20
- },
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2E6DD8",
+    padding: 15,
+    paddingTop: 50,
+  },
+  back: {
+    color: "#fff",
+    fontSize: 20,
+    marginRight: 15,
+  },
+  headerTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  form: {
+    padding: 30,
+  },
   input: {
     borderWidth: 1,
+    borderColor: "#ccc",
     padding: 10,
     marginBottom: 15,
+    borderRadius: 5,
   },
   button: {
     backgroundColor: "#2E6DD8",
     padding: 12,
     alignItems: "center",
+    marginTop: 10,
   },
-  buttonText: 
-  { color: "#fff", 
+  buttonText: { 
+    color: "#fff", 
     fontWeight: "bold" 
-
   },
 });

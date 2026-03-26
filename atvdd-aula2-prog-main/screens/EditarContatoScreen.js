@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
-import axios from 'axios';
-
-// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
-const API_URL = 'http://192.168.1.108:3001';
 
 export default function EditarContatoScreen({ route, navigation, contatos, setContatos }) {
   const { contato } = route.params;
@@ -18,20 +14,16 @@ export default function EditarContatoScreen({ route, navigation, contatos, setCo
       return;
     }
 
-    axios.put(`${API_URL}/contatos/${contato.id}`, {
-      ...contato,
-      nome,
-      email,
-      telefone
-    })
-    .then(() => {
-      Alert.alert("Sucesso", "Contato atualizado!");
-      navigation.navigate('ListaContatos');
-    })
-    .catch(error => {
-      console.log(error);
-      Alert.alert("Erro", "Erro ao atualizar contato");
+    const contatosAtualizados = contatos.map(c => {
+      if (c.id === contato.id) {
+        return { ...c, nome, email, telefone };
+      }
+      return c;
     });
+
+    setContatos(contatosAtualizados);
+    Alert.alert("Sucesso", "Contato atualizado!");
+    navigation.navigate('ListaContatos');
   }
 
   function excluir() {
@@ -44,44 +36,78 @@ export default function EditarContatoScreen({ route, navigation, contatos, setCo
           text: "Excluir", 
           style: "destructive",
           onPress: () => {
-            axios.delete(`${API_URL}/contatos/${contato.id}`)
-              .then(() => {
-                Alert.alert("Sucesso", "Contato excluido!");
-                navigation.navigate('ListaContatos');
-              })
-              .catch(error => {
-                console.log(error);
-                Alert.alert("Erro", "Erro ao excluir contato");
-              });
+            const contatosFiltrados = contatos.filter(c => c.id !== contato.id);
+            setContatos(contatosFiltrados);
+            Alert.alert("Sucesso", "Contato excluido!");
+            navigation.navigate('ListaContatos');
           }
         }
       ]
     );
   }
 
-  return  (
+  return (
     <View style={styles.container}>
-      <TextInput style={styles.input} value={nome} onChangeText={setNome} />
-      <TextInput style={styles.input} value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} value={telefone} onChangeText={setTelefone} />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Editar Contato</Text>
+      </View>
 
-      <TouchableOpacity style={styles.alterar} onPress={alterar}>
-        <Text style={styles.text}>Alterar</Text>
-      </TouchableOpacity>
+      <View style={styles.form}>
+        <Text>Nome</Text>
+        <TextInput style={styles.input} value={nome} onChangeText={setNome} />
+        
+        <Text>Email</Text>
+        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+        
+        <Text>Telefone</Text>
+        <TextInput style={styles.input} value={telefone} onChangeText={setTelefone} />
 
-      <TouchableOpacity style={styles.excluir} onPress={excluir}>
-        <Text style={styles.text}>Excluir</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.alterar} onPress={alterar}>
+          <Text style={styles.text}>Alterar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.excluir} onPress={excluir}>
+          <Text style={styles.text}>Excluir</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 30 },
+  container: { 
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2E6DD8",
+    padding: 15,
+    paddingTop: 50,
+  },
+  back: {
+    color: "#fff",
+    fontSize: 20,
+    marginRight: 15,
+  },
+  headerTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  form: {
+    padding: 30,
+  },
   input: {
     borderWidth: 1,
+    borderColor: "#ccc",
     padding: 10,
     marginBottom: 15,
+    borderRadius: 5,
   },
   alterar: {
     backgroundColor: "#2E6DD8",
@@ -95,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-     color: "#fff",
-     fontWeight: "bold"
-     },
+    color: "#fff",
+    fontWeight: "bold"
+  },
 });
