@@ -11,19 +11,31 @@ import {
   ScrollView,
 } from 'react-native';
 import axios from 'axios';
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
+
 export default function EsqueceuSenhaScreen({ navigation }) {
   const [email, setEmail] = useState('');
 
-  function recuperarSenha() {
-    axios.get(`http://localhost:3001/usuarios?email=${email}`)
+  function handleEnviar() {
+    if (!email) {
+      Alert.alert("Erro", "Digite seu email");
+      return;
+    }
+
+    axios.get(`${API_URL}/usuarios?email=${email}`)
       .then(response => {
         if (response.data.length > 0) {
-          alert("Email encontrado! (simulação)");
+          Alert.alert("Sucesso", "Email encontrado! Instrucoes enviadas (simulacao)");
         } else {
-          alert("Email não cadastrado");
+          Alert.alert("Erro", "Email nao cadastrado");
         }
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        console.log(error);
+        Alert.alert("Erro", "Erro ao conectar com servidor");
+      });
   }
 
   return (

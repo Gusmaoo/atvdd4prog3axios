@@ -1,42 +1,52 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import axios from 'axios';
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
+
 export default function LoginScreen({ navigation }) {
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-function logar() {
-  axios.get('http://192.168.1.108:3001/usuarios')
-    .then(response => {
 
-      const usuarios = response.data;
+  function logar() {
+    if (!email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
 
-      const usuarioEncontrado = usuarios.find(
-        u => u.email === email && u.senha === senha
-      );
+    axios.get(`${API_URL}/usuarios`)
+      .then(response => {
+        const usuarios = response.data;
 
-      if (usuarioEncontrado) {
-        alert("Login realizado!");
-        navigation.navigate('ListaContatos');
-      } else {
-        alert("Usuário ou senha inválidos");
-      }
+        const usuarioEncontrado = usuarios.find(
+          u => u.email === email && u.senha === senha
+        );
 
-    })
-    .catch(error => {
-      console.log(error);
-      alert("Erro ao conectar com servidor");
-    });
-}
+        if (usuarioEncontrado) {
+          Alert.alert("Sucesso", "Login realizado!");
+          navigation.navigate('ListaContatos');
+        } else {
+          Alert.alert("Erro", "Usuario ou senha invalidos");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        Alert.alert("Erro", "Erro ao conectar com servidor");
+      });
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LOGIN</Text>
 
       <TextInput
-        placeholder="login"
+        placeholder="Email"
         style={styles.input}
-        value={login}
-        onChangeText={setLogin}
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
 
       <TextInput
@@ -49,7 +59,7 @@ function logar() {
 
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate("ListaContatos")}
+        onPress={logar}
       >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
@@ -59,6 +69,13 @@ function logar() {
         onPress={() => navigation.navigate("CadastroUsuario")}
       >
         <Text style={styles.buttonText}>Cadastre-se</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.forgotButton}
+        onPress={() => navigation.navigate("EsqueceuSenha")}
+      >
+        <Text style={styles.forgotText}>Esqueceu a senha?</Text>
       </TouchableOpacity>
     </View>
   );
@@ -85,4 +102,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
+  forgotButton: {
+    marginTop: 15,
+    alignItems: "center",
+  },
+  forgotText: {
+    color: "#2E6DD8",
+    fontSize: 14,
+  },
 });

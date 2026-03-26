@@ -4,9 +4,14 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from "react-native";
 import axios from 'axios';
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
+
 export default function CadastroScreen({ navigation }) {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -14,23 +19,25 @@ export default function CadastroScreen({ navigation }) {
   const [senha, setSenha] = useState("");
 
   function salvarUsuario() {
-   
     if (!nome || !cpf || !email || !senha) {
-      alert("Preencha todos os campos");
+      Alert.alert("Erro", "Preencha todos os campos");
       return;
     }
 
-    axios.post('http://192.168.1.108:3001/usuarios', {
+    axios.post(`${API_URL}/usuarios`, {
       nome,
       cpf,
       email,
       senha
     })
     .then(() => {
-      alert("Usuário cadastrado com sucesso!");
+      Alert.alert("Sucesso", "Usuario cadastrado com sucesso!");
       navigation.navigate('Login');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      Alert.alert("Erro", "Erro ao cadastrar usuario");
+    });
   }
 
   return(

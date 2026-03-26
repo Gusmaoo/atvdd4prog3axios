@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import axios from 'axios';
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
 
 export default function CadastroContatoScreen({ navigation, contatos, setContatos }) {
   const [nome, setNome] = useState("");
@@ -8,22 +11,25 @@ export default function CadastroContatoScreen({ navigation, contatos, setContato
   const [telefone, setTelefone] = useState("");
 
   function salvar() {
-  if (!nome || !email || !telefone) {
-      alert("Preencha todos os campos");
+    if (!nome || !email || !telefone) {
+      Alert.alert("Erro", "Preencha todos os campos");
       return;
     }
 
-    axios.post('http://192.168.1.108:3001/contatos', {
+    axios.post(`${API_URL}/contatos`, {
       nome,
       email,
       telefone,
       usuarioId: 1
     })
     .then(() => {
-      alert("Contato cadastrado!");
+      Alert.alert("Sucesso", "Contato cadastrado!");
       navigation.navigate('ListaContatos');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      Alert.alert("Erro", "Erro ao cadastrar contato");
+    });
   }
 
   return (

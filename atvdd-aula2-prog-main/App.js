@@ -7,6 +7,7 @@ import CadastroScreen from "./screens/CadastroScreen";
 import ListaContatosScreen from "./screens/ListaContatosScreen";
 import CadastroContatoScreen from "./screens/CadastroContatoScreen";
 import EditarContatoScreen from "./screens/EditarContatoScreen";
+import EsqueceuSenhaScreen from "./screens/EsqueceuSenhaScreen";
 import { contatosMock } from "./data/contatos";
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +24,10 @@ export default function App() {
 
         <Stack.Screen name="CadastroUsuario">
           {(props) => <CadastroScreen {...props} />}
+        </Stack.Screen>
+
+        <Stack.Screen name="EsqueceuSenha">
+          {(props) => <EsqueceuSenhaScreen {...props} />}
         </Stack.Screen>
 
         <Stack.Screen name="ListaContatos">

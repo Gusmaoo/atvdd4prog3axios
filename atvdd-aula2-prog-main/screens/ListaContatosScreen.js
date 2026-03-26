@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import axios from 'axios';
-export default function ListaContatosScreen({ navigation, contatos }) {
-    useEffect(() => {
-    axios.get('http://192.168.1.108:3001/contatos')
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
+
+export default function ListaContatosScreen({ navigation, contatos, setContatos }) {
+  
+  useEffect(() => {
+    carregarContatos();
+  }, []);
+
+  function carregarContatos() {
+    axios.get(`${API_URL}/contatos`)
       .then(response => {
         setContatos(response.data);
       })
       .catch(error => console.log(error));
-  }, []);
+  }
 
   return (
     <View style={styles.container}>

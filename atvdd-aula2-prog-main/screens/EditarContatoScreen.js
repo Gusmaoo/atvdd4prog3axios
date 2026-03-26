@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import axios from 'axios';
+
+// IMPORTANTE: Altere este IP para o IP da sua maquina na rede local
+const API_URL = 'http://192.168.1.108:3001';
+
 export default function EditarContatoScreen({ route, navigation, contatos, setContatos }) {
   const { contato } = route.params;
 
@@ -9,31 +13,50 @@ export default function EditarContatoScreen({ route, navigation, contatos, setCo
   const [telefone, setTelefone] = useState(contato.telefone);
 
   function alterar() {
-  if (!nome || !email || !telefone) {
-      alert("Preencha todos os campos");
+    if (!nome || !email || !telefone) {
+      Alert.alert("Erro", "Preencha todos os campos");
       return;
     }
 
-    axios.put(`http://192.168.1.108:3001/contatos/${contato.id}`, {
+    axios.put(`${API_URL}/contatos/${contato.id}`, {
       ...contato,
       nome,
       email,
       telefone
     })
     .then(() => {
-      alert("Contato atualizado!");
+      Alert.alert("Sucesso", "Contato atualizado!");
       navigation.navigate('ListaContatos');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      Alert.alert("Erro", "Erro ao atualizar contato");
+    });
   }
 
-  function excluirContato() {
-    axios.delete(`http://192.168.1.108:3001/contatos/${contato.id}`)
-      .then(() => {
-        alert("Contato excluído!");
-        navigation.navigate('ListaContatos');
-      })
-      .catch(error => console.log(error));
+  function excluir() {
+    Alert.alert(
+      "Confirmar exclusao",
+      "Deseja realmente excluir este contato?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { 
+          text: "Excluir", 
+          style: "destructive",
+          onPress: () => {
+            axios.delete(`${API_URL}/contatos/${contato.id}`)
+              .then(() => {
+                Alert.alert("Sucesso", "Contato excluido!");
+                navigation.navigate('ListaContatos');
+              })
+              .catch(error => {
+                console.log(error);
+                Alert.alert("Erro", "Erro ao excluir contato");
+              });
+          }
+        }
+      ]
+    );
   }
 
   return  (
