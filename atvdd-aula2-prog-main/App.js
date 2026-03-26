@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -7,53 +7,18 @@ import CadastroScreen from "./screens/CadastroScreen";
 import ListaContatosScreen from "./screens/ListaContatosScreen";
 import CadastroContatoScreen from "./screens/CadastroContatoScreen";
 import EditarContatoScreen from "./screens/EditarContatoScreen";
-import { contatosMock } from "./data/contatos";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [contatos, setContatos] = useState(contatosMock);
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login">
-          {(props) => <LoginScreen {...props} />}
-        </Stack.Screen>
-
-        <Stack.Screen name="CadastroUsuario">
-          {(props) => <CadastroScreen {...props} />}
-        </Stack.Screen>
-
-        <Stack.Screen name="ListaContatos">
-          {(props) => (
-            <ListaContatosScreen
-              {...props}
-              contatos={contatos}
-              setContatos={setContatos}
-            />
-          )}
-        </Stack.Screen>
-
-        <Stack.Screen name="CadastroContato">
-          {(props) => (
-            <CadastroContatoScreen
-              {...props}
-              contatos={contatos}
-              setContatos={setContatos}
-            />
-          )}
-        </Stack.Screen>
-
-        <Stack.Screen name="EditarContato">
-          {(props) => (
-            <EditarContatoScreen
-              {...props}
-              contatos={contatos}
-              setContatos={setContatos}
-            />
-          )}
-        </Stack.Screen>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="CadastroUsuario" component={CadastroScreen} />
+        <Stack.Screen name="ListaContatos" component={ListaContatosScreen} />
+        <Stack.Screen name="CadastroContato" component={CadastroContatoScreen} />
+        <Stack.Screen name="EditarContato" component={EditarContatoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
